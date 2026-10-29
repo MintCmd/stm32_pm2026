@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.10)
 
 # Disable compiler checking
 # Otherwise it will fall with `reference to _exit() not found` error
@@ -80,3 +80,13 @@ add_custom_command(OUTPUT flash_target
         DEPENDS ${BIN_TARGET})
 
 add_custom_target(flash DEPENDS flash_target)
+
+add_custom_command(TARGET stm32_template POST_BUILD
+    COMMAND ${CMAKE_OBJCOPY} -O binary $<TARGET_FILE:stm32_template> ${CMAKE_BINARY_DIR}/stm32_template.bin
+    COMMENT "Generating .bin file..."
+)
+
+add_custom_command(TARGET stm32_template POST_BUILD
+    COMMAND ${CMAKE_OBJCOPY} -O ihex $<TARGET_FILE:stm32_template> ${CMAKE_BINARY_DIR}/stm32_template.hex
+    COMMENT "Generating .hex file..."
+)
